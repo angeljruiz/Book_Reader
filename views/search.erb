@@ -1,0 +1,28 @@
+<h2 class="content-subhead">Search</h2>
+
+<form action="/search" method="get">
+  <input name="query" value="<%= params[:query] %>">
+  <button type="submit">Search</button>
+  <%
+  if @query
+    if @found
+  %>
+      <h2 class="content-subhead"><%= "Results for '#{@query}'"%></h2>
+      <ul>
+        <%
+        @chapters.each.with_index do |arr, index|
+          if arr.size > 0
+        %>
+            <h4><%= @contents[index]%></h4>
+            <% arr.each do |chapter| %>
+              <li><a href=<%= "/chapters/#{index + 1}" %>><%= highlight(chapter, @query.downcase) %></a></li>
+            <% end %>
+          <% end %>
+        <% end %>
+      </ul>
+    <% else %>
+      <h2 class="content-subhead">Sorry, no matches were found.</h2>
+    <% end %>
+  <% end %>
+
+</form>
