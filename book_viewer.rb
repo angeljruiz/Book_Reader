@@ -1,5 +1,5 @@
 require "sinatra"
-require "sinatra/reloader"
+require "sinatra/reloader" if development?
 require "tilt/erubis"
 
 helpers do
@@ -38,11 +38,10 @@ get "/" do
 end
 
 get '/search' do
-  @query = params[:query] || ''
+  @query = params[:query]
   @chapters = 1.upto(12).map { |number| File.read("data/chp#{number}.txt")}
   @chapters.map!.with_index { |chapter, index| results = []; chapter.split("\n\n").each.with_index do |p, i|
-    p i
-    results << i if p.include?(@query.downcase)
+    results << i if p.include?((@query || '').downcase)
   end; get_paragraphs(results, index)}
   @found = !@chapters.none? { |arr| arr.size > 0 }
   erb :search
